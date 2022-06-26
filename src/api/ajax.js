@@ -9,7 +9,7 @@ import {message} from 'antd'
 export default function ajax(url,data={},type='GET'){
     return new Promise((resolve,reject)=>{
         let promise
-        if (type == 'GET'){
+        if (type === 'GET'){
             promise =  axios.get(url,{
                 params: data
             })
@@ -27,10 +27,4 @@ export default function ajax(url,data={},type='GET'){
         
     })
 
-    if (type == 'GET'){
-        return axios.get(url,{
-            params: data
-        })
-    }
-    return axios.post(url,data)
 }

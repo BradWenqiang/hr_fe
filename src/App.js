@@ -1,26 +1,18 @@
-import React, { Component } from 'react'
-import { Button } from 'antd'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from './pages/login'
-import Admin from './pages/admin'
+import { useRoutes } from 'react-router-dom'
+import routes from './routes'
+import memoryUtils from './utils/memoryUtils'
+import storeUtils from './utils/storageUtils'
 
+export default function App () {
 
-export default class App extends Component {
+  const element = useRoutes(routes)
 
-  render() {
-
+  const user = storeUtils.getUser()
+  memoryUtils.user = user
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Login/>}/>
-          <Route path='/admin' element={<Admin/>}/>
-        </Routes>
-      </BrowserRouter>
-      // <div>
-      //    <Button type='primary'> Pppp</Button> 
-      // </div>
+      <div>
+          {element}
+      </div>
+       
     )
-
-
-  }
 }

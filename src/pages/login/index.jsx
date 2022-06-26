@@ -1,31 +1,42 @@
-import React, { Component } from 'react'
+import React from 'react'
 import './login.less'
-
 import login_left from './images/login_left.png'
 import login_bg from './images/login_bg.png'
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input ,message} from 'antd';
-import {reqLogin} from '../../api'
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
+import { Button, Form, Input, message } from 'antd'
+import { reqLogin } from '../../api'
+import { useNavigate } from 'react-router-dom'
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
+
 
 
 
 /**
  * 登录的路由组件
  */
-export default class index extends Component {
-  
-  onFinish = async (values) => {
-    const {username,password} = values
-      const response = await reqLogin(username,password)
-      const result = response.data
-      if (result.code == 0){
-        message.success(result.data)
-      }else{
-        message.error(result.message)
-      }
+export default function Login() {
+  const navigate = useNavigate()
+
+  const onFinish = async (values) => {
+    const { username, password } = values
+    const response = await reqLogin(username, password)
+    const result = response.data
+    //登录成功跳转
+    if (result.code === '200') {
+      message.success('登录成功')
+      //存储登录的用户
+      const user = result.data
+      memoryUtils.user = user
+      storageUtils.saveUser(user)
+      navigate('/admin', { replace: true })
+    } else {
+      message.error(result.message)
+    }
+
   };
 
-  validateUsername= (rule, value, callback) =>{
+  const validateUsername = (rule, value, callback) => {
     if (typeof value === 'undefined') {
       callback(new Error('请输入用户名!'))
     }
@@ -41,7 +52,7 @@ export default class index extends Component {
     }
   }
 
-  validatePassword= (rule, value, callback) =>{
+  const validatePassword = (rule, value, callback) => {
     if (typeof value === 'undefined') {
       callback(new Error('请输入密码!'))
     }
@@ -57,76 +68,79 @@ export default class index extends Component {
     }
   }
 
-  render() {
-    return (
-      
-      <div className='login'>
-        
-        <div className='login-left'>
-          <div className='img_bg' >
 
-            <div className='top'>
-              <p className='h1'> Star HR</p>
-              <p className='h2'> 星星之火，可以燎原</p>
-            </div>
 
-            <div className='middle'>
-              <img className='img' src={login_left} alt='login_left' />
-            </div>
 
-            <div className='bottom' />
 
+  return (
+
+    <div className='login'>
+
+      <div className='login-left'>
+        <div className='img_bg' >
+
+          <div className='top'>
+            <p className='h1'> Star HR</p>
+            <p className='h2'> 星星之火，可以燎原</p>
           </div>
 
-
-        </div>
-        <div className='login-right'>
-          <div className='top' />
-          <div className='main-box'>
-            <p className='h1'> 用户登录</p>
-            <Form
-              name="normal_login"
-              className="login-form"
-              initialValues={{ remember: true }}
-              onFinish={this.onFinish}
-            >
-              <Form.Item
-                name="username"
-                rules={[{ required: true ,validator:this.validateUsername}]}
-              >
-                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="用户名" />
-              </Form.Item>
-              <Form.Item
-                name="password"
-                rules={[{ required: true,validator:this.validatePassword }]}
-              >
-                <Input
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  type="password"
-                  placeholder="密码"
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button">
-                  登录
-                </Button>
-
-              </Form.Item>
-             
-
-            </Form>
+          <div className='middle'>
+            <img className='img' src={login_left} alt='login_left' />
           </div>
-         
 
-        </div>
+          <div className='bottom' />
 
-        <div className='login_foot'>
-          <img className='img' src={login_bg} alt='login_foot' />
         </div>
 
 
       </div>
-    )
-  }
+      <div className='login-right'>
+        <div className='top' />
+        <div className='main-box'>
+          <p className='h1'> 用户登录</p>
+          <Form
+            name="normal_login"
+            className="login-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+          >
+
+            <Form.Item
+              name="username"
+              rules={[{ required: true, validator: validateUsername }]}
+            >
+              <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="用户名" />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, validator: validatePassword }]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="密码"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="login-form-button">
+                登录
+              </Button>
+
+            </Form.Item>
+
+
+          </Form>
+        </div>
+
+
+      </div>
+
+      <div className='login_foot'>
+        <img className='img' src={login_bg} alt='login_foot' />
+      </div>
+
+
+    </div>
+  )
 }
