@@ -1,6 +1,8 @@
 import axios from 'axios'
 import {message} from 'antd'
 
+axios.defaults.timeout = 30000;
+
 /* 
     封装ajax
     axios库

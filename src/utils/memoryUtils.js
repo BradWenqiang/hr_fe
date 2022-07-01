@@ -1,4 +1,4 @@
- const memoryUtils = {
+memoryUtils = {
     user: {}
 }
 export default memoryUtils
